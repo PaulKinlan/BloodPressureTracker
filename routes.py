@@ -3,6 +3,8 @@ from app import app, db
 from models import User, BloodPressureReading
 from werkzeug.security import generate_password_hash
 from sqlalchemy import desc
+import re
+from datetime import timedelta
 
 @app.route('/')
 def index():
@@ -16,6 +18,19 @@ def register():
         username = request.form['username']
         email = request.form['email']
         password = request.form['password']
+        confirm_password = request.form['confirm_password']
+        
+        if password != confirm_password:
+            flash('Passwords do not match.')
+            return redirect(url_for('register'))
+        
+        if len(password) < 8:
+            flash('Password must be at least 8 characters long.')
+            return redirect(url_for('register'))
+        
+        if not re.search(r'[A-Z]', password) or not re.search(r'[a-z]', password) or not re.search(r'\d', password):
+            flash('Password must contain at least one uppercase letter, one lowercase letter, and one number.')
+            return redirect(url_for('register'))
         
         existing_user = User.query.filter_by(username=username).first()
         if existing_user:
@@ -38,11 +53,16 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        remember = 'remember' in request.form
         
         user = User.query.filter_by(username=username).first()
         
         if user and user.check_password(password):
             session['user_id'] = user.id
+            if remember:
+                # Set session to last for 30 days
+                session.permanent = True
+                app.permanent_session_lifetime = timedelta(days=30)
             flash('Logged in successfully.')
             return redirect(url_for('dashboard'))
         else:
