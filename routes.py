@@ -20,6 +20,10 @@ def register():
         email = request.form['email']
         password = request.form['password']
         confirm_password = request.form['confirm_password']
+        first_name = request.form['first_name']
+        last_name = request.form['last_name']
+        date_of_birth = request.form['date_of_birth']
+        preferred_unit = request.form['preferred_unit']
         
         if password != confirm_password:
             flash('Passwords do not match.')
@@ -38,7 +42,14 @@ def register():
             flash('Username already exists. Please choose a different one.')
             return redirect(url_for('register'))
         
-        new_user = User(username=username, email=email)
+        new_user = User(
+            username=username,
+            email=email,
+            first_name=first_name,
+            last_name=last_name,
+            date_of_birth=datetime.strptime(date_of_birth, '%Y-%m-%d').date() if date_of_birth else None,
+            preferred_unit=preferred_unit
+        )
         new_user.set_password(password)
         
         try:
@@ -68,7 +79,6 @@ def login():
         if user and user.check_password(password):
             session['user_id'] = user.id
             if remember:
-                # Set session to last for 30 days
                 session.permanent = True
                 app.permanent_session_lifetime = timedelta(days=30)
             flash('Logged in successfully.')
