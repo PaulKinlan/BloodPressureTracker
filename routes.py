@@ -3,6 +3,7 @@ from app import app, db
 from models import User, BloodPressureReading
 from werkzeug.security import generate_password_hash
 from sqlalchemy import desc
+from sqlalchemy.exc import IntegrityError
 import re
 from datetime import timedelta
 
@@ -40,11 +41,18 @@ def register():
         new_user = User(username=username, email=email)
         new_user.set_password(password)
         
-        db.session.add(new_user)
-        db.session.commit()
-        
-        flash('Registration successful. Please log in.')
-        return redirect(url_for('login'))
+        try:
+            db.session.add(new_user)
+            db.session.commit()
+            flash('Registration successful. Please log in.')
+            return redirect(url_for('login'))
+        except IntegrityError as e:
+            db.session.rollback()
+            if 'user_email_key' in str(e):
+                flash('Email address already registered. Please use a different email.')
+            else:
+                flash('An error occurred during registration. Please try again.')
+            return redirect(url_for('register'))
     
     return render_template('register.html')
 
