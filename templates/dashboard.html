@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Welcome, {{ user.username }}!</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <h3>Add New Reading</h3>
+        <form method="POST">
+            <div class="mb-3">
+                <label for="systolic" class="form-label">Systolic</label>
+                <input type="number" class="form-control" id="systolic" name="systolic" required>
+            </div>
+            <div class="mb-3">
+                <label for="diastolic" class="form-label">Diastolic</label>
+                <input type="number" class="form-control" id="diastolic" name="diastolic" required>
+            </div>
+            <div class="mb-3">
+                <label for="pulse" class="form-label">Pulse (optional)</label>
+                <input type="number" class="form-control" id="pulse" name="pulse">
+            </div>
+            <div class="mb-3">
+                <label for="notes" class="form-label">Notes</label>
+                <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Reading</button>
+        </form>
+    </div>
+    <div class="col-md-6">
+        <h3>Blood Pressure Trend</h3>
+        <canvas id="bpChart"></canvas>
+    </div>
+</div>
+
+<h3 class="mt-4">Recent Readings</h3>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Systolic</th>
+            <th>Diastolic</th>
+            <th>Pulse</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for reading in readings %}
+        <tr>
+            <td>{{ reading.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+            <td>{{ reading.systolic }}</td>
+            <td>{{ reading.diastolic }}</td>
+            <td>{{ reading.pulse if reading.pulse else '-' }}</td>
+            <td>{{ reading.notes if reading.notes else '-' }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+    var ctx = document.getElementById('bpChart').getContext('2d');
+    var chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ chart_data.labels | tojson }},
+            datasets: [{
+                label: 'Systolic',
+                data: {{ chart_data.systolic | tojson }},
+                borderColor: 'rgb(255, 99, 132)',
+                fill: false
+            }, {
+                label: 'Diastolic',
+                data: {{ chart_data.diastolic | tojson }},
+                borderColor: 'rgb(54, 162, 235)',
+                fill: false
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Date'
+                    }
+                },
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Blood Pressure (mmHg)'
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

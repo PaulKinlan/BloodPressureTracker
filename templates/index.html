@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="jumbotron">
+    <h1 class="display-4">Welcome to Blood Pressure Monitor</h1>
+    <p class="lead">Track your blood pressure readings and monitor your health over time.</p>
+    <hr class="my-4">
+    <p>Get started by logging in or creating a new account.</p>
+    <a class="btn btn-primary btn-lg" href="{{ url_for('login') }}" role="button">Login</a>
+    <a class="btn btn-secondary btn-lg" href="{{ url_for('register') }}" role="button">Register</a>
+</div>
+{% endblock %}
