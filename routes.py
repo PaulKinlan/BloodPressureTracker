@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash
 from sqlalchemy import desc
 from sqlalchemy.exc import IntegrityError
 import re
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 @app.route('/')
 def index():
@@ -80,7 +80,7 @@ def login():
 
 @app.route('/logout')
 def logout():
-    session.pop('user_id', None)
+    session.clear()
     flash('You have been logged out.')
     return redirect(url_for('index'))
 
@@ -119,3 +119,29 @@ def dashboard():
     }
     
     return render_template('dashboard.html', user=user, readings=readings, chart_data=chart_data)
+
+@app.route('/profile', methods=['GET', 'POST'])
+def profile():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    
+    user = User.query.get(session['user_id'])
+    
+    if request.method == 'POST':
+        user.first_name = request.form['first_name']
+        user.last_name = request.form['last_name']
+        user.email = request.form['email']
+        user.preferred_unit = request.form['preferred_unit']
+        
+        date_of_birth = request.form['date_of_birth']
+        if date_of_birth:
+            user.date_of_birth = datetime.strptime(date_of_birth, '%Y-%m-%d').date()
+        
+        try:
+            db.session.commit()
+            flash('Profile updated successfully.')
+        except IntegrityError:
+            db.session.rollback()
+            flash('An error occurred while updating your profile. Please try again.')
+    
+    return render_template('profile.html', user=user)

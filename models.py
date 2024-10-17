@@ -7,6 +7,10 @@ class User(db.Model):
     username = db.Column(db.String(64), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(256))
+    first_name = db.Column(db.String(64))
+    last_name = db.Column(db.String(64))
+    date_of_birth = db.Column(db.Date)
+    preferred_unit = db.Column(db.String(10), default='mmHg')
     readings = db.relationship('BloodPressureReading', backref='user', lazy='dynamic')
 
     def set_password(self, password):
