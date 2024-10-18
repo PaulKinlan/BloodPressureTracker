@@ -8,6 +8,14 @@
         <h3>Add New Reading</h3>
         <form method="POST">
             <div class="mb-3">
+                <label for="reading_date" class="form-label">Date</label>
+                <input type="date" class="form-control" id="reading_date" name="reading_date" required>
+            </div>
+            <div class="mb-3">
+                <label for="reading_time" class="form-label">Time</label>
+                <input type="time" class="form-control" id="reading_time" name="reading_time" required>
+            </div>
+            <div class="mb-3">
                 <label for="systolic" class="form-label">Systolic</label>
                 <input type="number" class="form-control" id="systolic" name="systolic" required>
             </div>
@@ -37,6 +45,7 @@
     <thead>
         <tr>
             <th>Date</th>
+            <th>Time</th>
             <th>Systolic</th>
             <th>Diastolic</th>
             <th>Pulse</th>
@@ -47,7 +56,8 @@
     <tbody>
         {% for reading in readings %}
         <tr>
-            <td>{{ reading.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+            <td>{{ reading.timestamp.strftime('%Y-%m-%d') }}</td>
+            <td>{{ reading.timestamp.strftime('%H:%M') }}</td>
             <td>{{ reading.systolic }}</td>
             <td>{{ reading.diastolic }}</td>
             <td>{{ reading.pulse if reading.pulse else '-' }}</td>

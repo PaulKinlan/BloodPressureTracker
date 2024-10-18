@@ -104,13 +104,19 @@ def dashboard():
     user = User.query.get(session['user_id'])
     
     if request.method == 'POST':
+        reading_date = request.form['reading_date']
+        reading_time = request.form['reading_time']
         systolic = int(request.form['systolic'])
         diastolic = int(request.form['diastolic'])
         pulse = int(request.form['pulse']) if request.form['pulse'] else None
         notes = request.form['notes']
         
+        # Combine date and time into a single datetime object
+        reading_datetime = datetime.strptime(f"{reading_date} {reading_time}", "%Y-%m-%d %H:%M")
+        
         new_reading = BloodPressureReading(
             user_id=user.id,
+            timestamp=reading_datetime,
             systolic=systolic,
             diastolic=diastolic,
             pulse=pulse,
