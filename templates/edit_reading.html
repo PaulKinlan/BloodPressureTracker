@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Edit Blood Pressure Reading</h2>
+<form method="POST">
+    <div class="mb-3">
+        <label for="systolic" class="form-label">Systolic</label>
+        <input type="number" class="form-control" id="systolic" name="systolic" value="{{ reading.systolic }}" required>
+    </div>
+    <div class="mb-3">
+        <label for="diastolic" class="form-label">Diastolic</label>
+        <input type="number" class="form-control" id="diastolic" name="diastolic" value="{{ reading.diastolic }}" required>
+    </div>
+    <div class="mb-3">
+        <label for="pulse" class="form-label">Pulse (optional)</label>
+        <input type="number" class="form-control" id="pulse" name="pulse" value="{{ reading.pulse }}">
+    </div>
+    <div class="mb-3">
+        <label for="notes" class="form-label">Notes</label>
+        <textarea class="form-control" id="notes" name="notes" rows="3">{{ reading.notes }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Update Reading</button>
+    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

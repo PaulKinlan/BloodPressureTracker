@@ -158,6 +158,43 @@ def profile():
     
     return render_template('profile.html', user=user)
 
+@app.route('/edit_reading/<int:reading_id>', methods=['GET', 'POST'])
+def edit_reading(reading_id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    
+    reading = BloodPressureReading.query.get_or_404(reading_id)
+    if reading.user_id != session['user_id']:
+        flash('You do not have permission to edit this reading.')
+        return redirect(url_for('dashboard'))
+    
+    if request.method == 'POST':
+        reading.systolic = int(request.form['systolic'])
+        reading.diastolic = int(request.form['diastolic'])
+        reading.pulse = int(request.form['pulse']) if request.form['pulse'] else None
+        reading.notes = request.form['notes']
+        
+        db.session.commit()
+        flash('Blood pressure reading updated successfully.')
+        return redirect(url_for('dashboard'))
+    
+    return render_template('edit_reading.html', reading=reading)
+
+@app.route('/delete_reading/<int:reading_id>', methods=['POST'])
+def delete_reading(reading_id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    
+    reading = BloodPressureReading.query.get_or_404(reading_id)
+    if reading.user_id != session['user_id']:
+        flash('You do not have permission to delete this reading.')
+        return redirect(url_for('dashboard'))
+    
+    db.session.delete(reading)
+    db.session.commit()
+    flash('Blood pressure reading deleted successfully.')
+    return redirect(url_for('dashboard'))
+
 def generate_token(email):
     serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
     return serializer.dumps(email, salt='password-reset-salt')
