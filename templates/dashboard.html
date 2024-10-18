@@ -9,11 +9,11 @@
         <form method="POST">
             <div class="mb-3">
                 <label for="reading_date" class="form-label">Date</label>
-                <input type="date" class="form-control" id="reading_date" name="reading_date" required>
+                <input type="date" class="form-control" id="reading_date" name="reading_date" value="{{ current_date }}" required>
             </div>
             <div class="mb-3">
                 <label for="reading_time" class="form-label">Time</label>
-                <input type="time" class="form-control" id="reading_time" name="reading_time" required>
+                <input type="time" class="form-control" id="reading_time" name="reading_time" value="{{ current_time }}" required>
             </div>
             <div class="mb-3">
                 <label for="systolic" class="form-label">Systolic</label>

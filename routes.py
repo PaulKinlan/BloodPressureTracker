@@ -136,7 +136,10 @@ def dashboard():
         'diastolic': [reading.diastolic for reading in reversed(readings)]
     }
     
-    return render_template('dashboard.html', user=user, readings=readings, chart_data=chart_data)
+    current_date = datetime.now().strftime('%Y-%m-%d')
+    current_time = datetime.now().strftime('%H:%M')
+    
+    return render_template('dashboard.html', user=user, readings=readings, chart_data=chart_data, current_date=current_date, current_time=current_time)
 
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
