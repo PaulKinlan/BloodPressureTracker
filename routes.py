@@ -169,6 +169,11 @@ def edit_reading(reading_id):
         return redirect(url_for('dashboard'))
     
     if request.method == 'POST':
+        date = request.form['date']
+        time = request.form['time']
+        timestamp = datetime.strptime(f"{date} {time}", "%Y-%m-%d %H:%M")
+        
+        reading.timestamp = timestamp
         reading.systolic = int(request.form['systolic'])
         reading.diastolic = int(request.form['diastolic'])
         reading.pulse = int(request.form['pulse']) if request.form['pulse'] else None

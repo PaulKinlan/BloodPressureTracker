@@ -4,6 +4,14 @@
 <h2>Edit Blood Pressure Reading</h2>
 <form method="POST">
     <div class="mb-3">
+        <label for="date" class="form-label">Date</label>
+        <input type="date" class="form-control" id="date" name="date" value="{{ reading.timestamp.strftime('%Y-%m-%d') }}" required>
+    </div>
+    <div class="mb-3">
+        <label for="time" class="form-label">Time</label>
+        <input type="time" class="form-control" id="time" name="time" value="{{ reading.timestamp.strftime('%H:%M') }}" required>
+    </div>
+    <div class="mb-3">
         <label for="systolic" class="form-label">Systolic</label>
         <input type="number" class="form-control" id="systolic" name="systolic" value="{{ reading.systolic }}" required>
     </div>
